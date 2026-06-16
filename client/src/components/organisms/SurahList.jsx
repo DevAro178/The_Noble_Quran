@@ -4,8 +4,12 @@ import './organisms.css';
 const SurahList = ({ surahs, onSelectSurah }) => {
   if (surahs.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '48px', color: 'var(--text-secondary)' }}>
-        No Surahs match your search query.
+      <div className="no-results-placeholder animate-fade-in">
+        <span className="no-results-arabic">لَا عِلْمَ لَنَا إِلَّا مَا عَلَّمْتَنَا</span>
+        <h3 className="no-results-title">No Surahs Found</h3>
+        <p className="no-results-message">
+          We couldn't find any Surahs matching your search. Please double check your spelling or search terms (e.g. "Fatiha", "Kahf", or "18").
+        </p>
       </div>
     );
   }
