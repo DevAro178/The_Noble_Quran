@@ -27,7 +27,7 @@ const Home = () => {
         setLoading(true);
         const res = await fetch(`${API_BASE_URL}/surahs`);
         const result = await res.json();
-        
+
         if (result.success) {
           setSurahs(result.data);
         } else {
@@ -59,7 +59,8 @@ const Home = () => {
     if (!text) return '';
     return text
       .toLowerCase()
-      .replace(/^(al-|el-|ar-|an-|at-|ash-|az-|ad-|as-|al\s+|el\s+|ar\s+|an\s+|at\s+|ash\s+|az\s+|ad\s+|as\s+)/g, '')
+      .replace(/\b(surah|sura|surat)\b/g, '') // remove generic words
+      .replace(/^(al-|el-|ar-|an-|at-|ash-|az-|ad-|as-|al\s+|el\s+|ar\s+|an\s+|at\s+|ash\s+|az\s+|ad\s+|as\s+)/g, '') // remove prefix
       .replace(/[^a-z0-9]/g, '');
   };
 
@@ -87,8 +88,8 @@ const Home = () => {
     const vQuery = getVowelless(searchQuery);
     if (vName && vQuery && (vName.includes(vQuery) || vQuery.includes(vName))) return true;
 
-    // Match para name
-    if (surah.paraName.toLowerCase().includes(query)) return true;
+    // Match para name (with null safety)
+    if (surah.paraName && surah.paraName.toLowerCase().includes(query)) return true;
 
     return false;
   });
@@ -97,8 +98,8 @@ const Home = () => {
     <div className="home-page container animate-fade-in">
       <header className="home-header">
         <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '-20px' }}>
-          <Button 
-            variant="icon" 
+          <Button
+            variant="icon"
             onClick={() => setIsSettingsOpen(true)}
             title="Open Settings"
           >
@@ -111,16 +112,16 @@ const Home = () => {
       </header>
 
       {lastRead && (
-        <HistoryCard 
-          lastRead={lastRead} 
-          onResume={handleResumeReading} 
+        <HistoryCard
+          lastRead={lastRead}
+          onResume={handleResumeReading}
         />
       )}
 
       <section className="search-section">
-        <SearchBar 
-          value={searchQuery} 
-          onChange={setSearchQuery} 
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
         />
       </section>
 
@@ -136,16 +137,16 @@ const Home = () => {
             <p className="error-message">{error}</p>
           </div>
         ) : (
-          <SurahList 
-            surahs={filteredSurahs} 
-            onSelectSurah={handleSelectSurah} 
+          <SurahList
+            surahs={filteredSurahs}
+            onSelectSurah={handleSelectSurah}
           />
         )}
       </main>
 
-      <SettingsDrawer 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
+      <SettingsDrawer
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
       />
     </div>
   );
