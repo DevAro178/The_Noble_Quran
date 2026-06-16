@@ -1,14 +1,14 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { DEFAULT_TRANSLATIONS } from '../config/constants';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { DEFAULT_TRANSLATIONS } from "../config/constants";
 
 export const useQuranStore = create(
   persist(
     (set, get) => ({
       // Theme state
-      theme: 'dark', // 'light' | 'dark'
+      theme: "light", // 'light' | 'dark'
       setTheme: (theme) => {
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute("data-theme", theme);
         set({ theme });
       },
 
@@ -16,11 +16,17 @@ export const useQuranStore = create(
       arabicFontSize: 28,
       translationFontSize: 16,
       setArabicFontSize: (size) => {
-        document.documentElement.style.setProperty('--arabic-font-size', `${size}px`);
+        document.documentElement.style.setProperty(
+          "--arabic-font-size",
+          `${size}px`,
+        );
         set({ arabicFontSize: size });
       },
       setTranslationFontSize: (size) => {
-        document.documentElement.style.setProperty('--translation-font-size', `${size}px`);
+        document.documentElement.style.setProperty(
+          "--translation-font-size",
+          `${size}px`,
+        );
         set({ translationFontSize: size });
       },
 
@@ -51,13 +57,19 @@ export const useQuranStore = create(
       // Action to apply loaded variables to DOM on app startup
       initAppStyles: () => {
         const { theme, arabicFontSize, translationFontSize } = get();
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.style.setProperty('--arabic-font-size', `${arabicFontSize}px`);
-        document.documentElement.style.setProperty('--translation-font-size', `${translationFontSize}px`);
-      }
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.setProperty(
+          "--arabic-font-size",
+          `${arabicFontSize}px`,
+        );
+        document.documentElement.style.setProperty(
+          "--translation-font-size",
+          `${translationFontSize}px`,
+        );
+      },
     }),
     {
-      name: 'alquran-settings-store', // localStorage key
+      name: "alquran-settings-store", // localStorage key
       partialize: (state) => ({
         theme: state.theme,
         arabicFontSize: state.arabicFontSize,
@@ -65,6 +77,6 @@ export const useQuranStore = create(
         activeTranslations: state.activeTranslations,
         lastRead: state.lastRead,
       }),
-    }
-  )
+    },
+  ),
 );

@@ -14,9 +14,12 @@ import './pages.css';
 const Home = () => {
   const navigate = useNavigate();
   const [surahs, setSurahs] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchError, setSearchError] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const { lastRead } = useQuranStore();
@@ -44,6 +47,45 @@ const Home = () => {
     fetchSurahs();
   }, []);
 
+  // Debounced search API call
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (!query) {
+      setSearchResults(null);
+      setSearchLoading(false);
+      setSearchError(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    setSearchError(false);
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/surahs/search?q=${encodeURIComponent(query)}`);
+        
+        if (!res.ok) {
+          throw new Error('Scripture server not responding');
+        }
+
+        const result = await res.json();
+        if (result.success) {
+          setSearchResults(result.data);
+        } else {
+          throw new Error(result.message || 'Search failed');
+        }
+      } catch (err) {
+        console.error('Error searching surahs:', err);
+        setSearchError(true);
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 400); // 400ms debounce
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
+
   const handleSelectSurah = (suraNo) => {
     navigate(`/surah/${suraNo}`);
   };
@@ -54,47 +96,7 @@ const Home = () => {
     }
   };
 
-  // Normalize text to support roman/phonetic searches (e.g. Al-Kahf -> kahf, kahaf)
-  const normalizeText = (text) => {
-    if (!text) return '';
-    return text
-      .toLowerCase()
-      .replace(/\b(surah|sura|surat)\b/g, '') // remove generic words
-      .replace(/^(al-|el-|ar-|an-|at-|ash-|az-|ad-|as-|al\s+|el\s+|ar\s+|an\s+|at\s+|ash\s+|az\s+|ad\s+|as\s+)/g, '') // remove prefix
-      .replace(/[^a-z0-9]/g, '');
-  };
-
-  const getVowelless = (text) => {
-    return normalizeText(text).replace(/[aeiouy]/g, '');
-  };
-
-  // Client side filtering for surah list
-  const filteredSurahs = surahs.filter((surah) => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return true;
-
-    // 1. Match surah number exactly
-    if (surah.suraNo.toString() === query) return true;
-
-    const normQuery = normalizeText(searchQuery);
-    if (!normQuery) return false;
-
-    // 2. Match surah name (with safety guard against empty/null values)
-    if (surah.suraName) {
-      const normName = normalizeText(surah.suraName);
-      if (normName && normName.includes(normQuery)) return true;
-    }
-
-    // 3. Match para name (with safety guard against empty/null values)
-    if (surah.paraName) {
-      const normPara = normalizeText(surah.paraName);
-      if (normPara && normPara.includes(normQuery)) return true;
-    }
-
-    return false;
-  });
-
-  console.log(`[Search Debug] searchQuery: "${searchQuery}", filtered count: ${filteredSurahs.length}`);
+  const displayedSurahs = searchResults !== null ? searchResults : surahs;
 
   return (
     <div className="home-page container animate-fade-in">
@@ -138,9 +140,25 @@ const Home = () => {
             <h3 className="error-title">Unable to load Quran index</h3>
             <p className="error-message">{error}</p>
           </div>
+        ) : searchLoading ? (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Searching Holy Quran...</p>
+          </div>
+        ) : searchError ? (
+          <div className="islamic-error-placeholder animate-fade-in">
+            <span className="islamic-error-arabic">لَا تَخَفْ وَلَا تَحْزَنْ</span>
+            <h3 className="islamic-error-title">Connection Interrupted</h3>
+            <p className="islamic-error-message">
+              "Do not fear and do not grieve." We are unable to connect to the scripture servers. Please check your connection or try again shortly.
+            </p>
+            <Button variant="secondary" onClick={() => setSearchQuery(searchQuery + ' ')} className="smooth-transition">
+              Retry Search
+            </Button>
+          </div>
         ) : (
           <SurahList
-            surahs={filteredSurahs}
+            surahs={displayedSurahs}
             onSelectSurah={handleSelectSurah}
           />
         )}
