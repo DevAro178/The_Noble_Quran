@@ -164,3 +164,54 @@
   color: var(--text-secondary);
   max-width: 400px;
 }
+
+/* Reader Footer Islamic Placeholder Styles */
+.reader-footer-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 56px 24px;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(180deg, var(--bg-card) 0%, rgba(0, 163, 153, 0.03) 100%);
+  border: 1px dashed var(--border-color);
+  margin-top: 56px;
+  margin-bottom: 35vh; /* Enables scrolling the last verse above the middle of the screen */
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.reader-footer-placeholder:hover {
+  border-color: var(--accent-mint);
+}
+
+.reader-footer-arabic {
+  font-family: var(--font-arabic);
+  font-size: 32px;
+  color: var(--text-primary);
+  direction: rtl;
+}
+
+.reader-footer-translation {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.reader-footer-dua {
+  font-family: var(--font-arabic);
+  font-size: 24px;
+  color: var(--accent-mint);
+  direction: rtl;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.reader-footer-dua-translation {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 500px;
+}
+

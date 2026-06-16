@@ -71,32 +71,57 @@ const Reader = () => {
   useEffect(() => {
     if (loading || verses.length === 0) return;
 
-    // Disconnect old observer if any
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
     const surahName = verses[0]?.suraName || 'Quran';
+    const activeIntersections = {};
 
-    // Set up observer: trigger when verse is in upper viewport area
+    // Trigger area is between 5% and 60% from the top of the viewport (upper-middle area)
     const options = {
       root: null,
-      rootMargin: '0px 0px -75% 0px', // Detects items near the top third of viewport
+      rootMargin: '-5% 0px -40% 0px',
       threshold: 0
     };
 
     const callback = (entries) => {
       entries.forEach((entry) => {
+        const id = entry.target.id;
         if (entry.isIntersecting) {
-          const ayatId = entry.target.id;
-          const ayatNo = parseInt(ayatId.replace('ayah-', ''));
-          
-          // Only update if it is different from the stored last read
-          if (!lastRead || lastRead.suraNo !== parseInt(suraNo) || lastRead.ayatNo !== ayatNo) {
-            setLastRead(parseInt(suraNo), surahName, ayatNo);
-          }
+          activeIntersections[id] = entry.target;
+        } else {
+          delete activeIntersections[id];
         }
       });
+
+      const activeIds = Object.keys(activeIntersections);
+      if (activeIds.length > 0) {
+        // Target scroll-tracking line is 30% from the top of the viewport
+        const targetY = window.innerHeight * 0.3;
+        let closestAyahNo = null;
+        let minDiff = Infinity;
+
+        activeIds.forEach((id) => {
+          const element = activeIntersections[id];
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            const diff = Math.abs(rect.top - targetY);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestAyahNo = parseInt(id.replace('ayah-', ''));
+            }
+          }
+        });
+
+        if (closestAyahNo !== null) {
+          const state = useQuranStore.getState();
+          const currentLastRead = state.lastRead;
+          if (!currentLastRead || currentLastRead.suraNo !== parseInt(suraNo) || currentLastRead.ayatNo !== closestAyahNo) {
+            state.setLastRead(parseInt(suraNo), surahName, closestAyahNo);
+          }
+        }
+      }
     };
 
     observerRef.current = new IntersectionObserver(callback, options);
@@ -114,7 +139,24 @@ const Reader = () => {
         observerRef.current.disconnect();
       }
     };
-  }, [loading, verses, suraNo, lastRead, setLastRead]);
+  }, [loading, verses, suraNo]);
+
+  const handleMarkLastRead = (ayatNo) => {
+    const surahName = verses[0]?.suraName || 'Quran';
+    setLastRead(parseInt(suraNo), surahName, ayatNo);
+    
+    // Smoothly scroll the clicked verse to the target zone (30% from the top of viewport)
+    const element = document.getElementById(`ayah-${ayatNo}`);
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const targetScrollTop = scrollTop + rect.top - window.innerHeight * 0.3;
+      window.scrollTo({
+        top: targetScrollTop,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleBack = () => {
     navigate('/');
@@ -181,10 +223,18 @@ const Reader = () => {
                   key={verse.id}
                   verse={verse}
                   isActiveLastRead={lastRead && lastRead.suraNo === parseInt(suraNo) && lastRead.ayatNo === verse.ayatNo}
-                  onMarkLastRead={() => setLastRead(parseInt(suraNo), currentSurahName, verse.ayatNo)}
+                  onMarkLastRead={() => handleMarkLastRead(verse.ayatNo)}
                   activeTranslations={activeTranslations}
                 />
               ))}
+            </div>
+
+            {/* Bottom Islamic placeholder/footer to enable scrolling the last ayah past the target zone */}
+            <div className="reader-footer-placeholder smooth-transition">
+              <span className="reader-footer-arabic">صَدَقَ اللهُ الْعَظِيمُ</span>
+              <p className="reader-footer-translation">"Allah Almighty has spoken the truth"</p>
+              <span className="reader-footer-dua">رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ</span>
+              <p className="reader-footer-dua-translation">"Our Lord, accept [this] from us. Indeed, You are the Hearing, the Knowing."</p>
             </div>
           </>
         )}

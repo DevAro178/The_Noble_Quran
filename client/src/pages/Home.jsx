@@ -8,6 +8,7 @@ import HistoryCard from '../components/molecules/HistoryCard';
 import SurahList from '../components/organisms/SurahList';
 import SettingsDrawer from '../components/organisms/SettingsDrawer';
 import Button from '../components/atoms/Button';
+import Logo from '../components/atoms/Logo';
 import './pages.css';
 
 const Home = () => {
@@ -53,6 +54,19 @@ const Home = () => {
     }
   };
 
+  // Normalize text to support roman/phonetic searches (e.g. Al-Kahf -> kahf, kahaf)
+  const normalizeText = (text) => {
+    if (!text) return '';
+    return text
+      .toLowerCase()
+      .replace(/^(al-|el-|ar-|an-|at-|ash-|az-|ad-|as-|al\s+|el\s+|ar\s+|an\s+|at\s+|ash\s+|az\s+|ad\s+|as\s+)/g, '')
+      .replace(/[^a-z0-9]/g, '');
+  };
+
+  const getVowelless = (text) => {
+    return normalizeText(text).replace(/[aeiouy]/g, '');
+  };
+
   // Client side filtering for surah list
   const filteredSurahs = surahs.filter((surah) => {
     const query = searchQuery.toLowerCase().trim();
@@ -61,8 +75,17 @@ const Home = () => {
     // Match surah number
     if (surah.suraNo.toString() === query) return true;
 
-    // Match surah name (English)
-    if (surah.suraName.toLowerCase().includes(query)) return true;
+    // Normalize both strings
+    const normName = normalizeText(surah.suraName);
+    const normQuery = normalizeText(searchQuery);
+
+    // Direct match or substring match on normalized names
+    if (normName.includes(normQuery) || normQuery.includes(normName)) return true;
+
+    // Phonetic/vowel-less fallback match
+    const vName = getVowelless(surah.suraName);
+    const vQuery = getVowelless(searchQuery);
+    if (vName && vQuery && (vName.includes(vQuery) || vQuery.includes(vName))) return true;
 
     // Match para name
     if (surah.paraName.toLowerCase().includes(query)) return true;
@@ -73,7 +96,7 @@ const Home = () => {
   return (
     <div className="home-page container animate-fade-in">
       <header className="home-header">
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '-10px' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '-20px' }}>
           <Button 
             variant="icon" 
             onClick={() => setIsSettingsOpen(true)}
@@ -82,6 +105,7 @@ const Home = () => {
             <Settings size={22} />
           </Button>
         </div>
+        <Logo size={64} className="home-logo-svg" style={{ marginBottom: '16px' }} />
         <h1 className="home-logo">The Noble Quran</h1>
         <p className="home-subtitle">Read, study, and search translations of the Holy Quran</p>
       </header>
