@@ -70,26 +70,26 @@ const Home = () => {
 
   // Client side filtering for surah list
   const filteredSurahs = surahs.filter((surah) => {
-    const query = searchQuery.toLowerCase().trim();
+    const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
 
-    // Match surah number
+    // 1. Match surah number exactly
     if (surah.suraNo.toString() === query) return true;
 
-    // Normalize both strings
-    const normName = normalizeText(surah.suraName);
     const normQuery = normalizeText(searchQuery);
+    if (!normQuery) return false;
 
-    // Direct match or substring match on normalized names
-    if (normName.includes(normQuery) || normQuery.includes(normName)) return true;
+    // 2. Match surah name (with safety guard against empty/null values)
+    if (surah.suraName) {
+      const normName = normalizeText(surah.suraName);
+      if (normName && normName.includes(normQuery)) return true;
+    }
 
-    // Phonetic/vowel-less fallback match
-    const vName = getVowelless(surah.suraName);
-    const vQuery = getVowelless(searchQuery);
-    if (vName && vQuery && (vName.includes(vQuery) || vQuery.includes(vName))) return true;
-
-    // Match para name (with null safety)
-    if (surah.paraName && surah.paraName.toLowerCase().includes(query)) return true;
+    // 3. Match para name (with safety guard against empty/null values)
+    if (surah.paraName) {
+      const normPara = normalizeText(surah.paraName);
+      if (normPara && normPara.includes(normQuery)) return true;
+    }
 
     return false;
   });
