@@ -1,0 +1,166 @@
+/* Home Page Styles */
+.home-page {
+  padding-top: 48px;
+  padding-bottom: 80px;
+}
+
+.home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 48px;
+  gap: 8px;
+}
+
+.home-logo {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.home-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.search-section {
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+  width: 100%;
+}
+
+/* Reader Page Styles */
+.reader-page {
+  padding-bottom: 100px;
+}
+
+.reader-navbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+  margin-bottom: 32px;
+  transition: background-color var(--transition-normal);
+}
+
+.reader-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.reader-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reader-surah-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.reader-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  border-radius: var(--border-radius-lg);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.reader-banner-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.reader-banner-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.reader-bismillah-container {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 16px 0;
+  width: 100%;
+  border-bottom: 1px dashed var(--border-color);
+  margin-bottom: 32px;
+}
+
+.reader-bismillah {
+  font-family: var(--font-arabic);
+  font-size: 32px;
+  color: var(--text-primary);
+  direction: rtl;
+}
+
+.verses-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+/* Loading & Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-mint);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  gap: 16px;
+  text-align: center;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.error-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 400px;
+}

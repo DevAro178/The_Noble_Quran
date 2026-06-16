@@ -1,0 +1,209 @@
+/* SearchBar styles */
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-bar-container:focus-within {
+  border-color: var(--accent-mint);
+  box-shadow: 0 0 0 3px var(--accent-mint-light);
+}
+
+.search-icon {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input {
+  flex-grow: 1;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.search-clear-btn {
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 50%;
+}
+
+.search-clear-btn:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* VerseCard styles */
+.verse-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), background-color var(--transition-normal);
+}
+
+.verse-card:hover {
+  border-color: var(--border-color-hover);
+}
+
+.verse-card.active-last-read {
+  border-color: var(--accent-mint);
+  box-shadow: 0 0 0 2px var(--accent-mint-light);
+}
+
+.verse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 12px;
+}
+
+.verse-metadata {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.verse-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verse-arabic-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 0;
+  width: 100%;
+}
+
+.verse-arabic {
+  font-family: var(--font-arabic);
+  font-size: var(--arabic-font-size);
+  color: var(--text-primary);
+  line-height: 2.2;
+  text-align: right;
+  direction: rtl;
+  word-spacing: 2px;
+}
+
+.verse-translations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.verse-translation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 16px;
+  border-left: 3px solid var(--border-color);
+}
+
+.verse-translation-item.rtl-lang {
+  padding-left: 0;
+  padding-right: 16px;
+  border-left: none;
+  border-right: 3px solid var(--border-color);
+  text-align: right;
+  direction: rtl;
+}
+
+.verse-translation-author {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-mint);
+}
+
+.verse-translation-text {
+  font-size: var(--translation-font-size);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* HistoryCard styles */
+.history-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background-color: var(--accent-mint-light);
+  border: 1px solid var(--accent-mint);
+  border-radius: var(--border-radius-md);
+  margin-bottom: 32px;
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.history-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.history-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-mint);
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-mint);
+}
+
+.history-detail {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.history-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
