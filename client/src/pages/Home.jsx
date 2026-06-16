@@ -94,6 +94,8 @@ const Home = () => {
     return false;
   });
 
+  console.log(`[Search Debug] searchQuery: "${searchQuery}", filtered count: ${filteredSurahs.length}`);
+
   return (
     <div className="home-page container animate-fade-in">
       <header className="home-header">
