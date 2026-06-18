@@ -1,0 +1,3 @@
+[2026-06-18T12:05:35.286Z] Error performing surah search: Unknown database 'AlQurdan'
+[2026-06-18T12:05:42.037Z] Error performing surah search: Unknown column 'AlQuran' in 'where clause'
+[2026-06-18T12:05:51.172Z] Error performing surah search: Unknown column 'AlQuran' in 'where clause'
