@@ -1,4 +1,4 @@
-export const API_BASE_URL = "https://the-noble-quran-seven.vercel.app/api";
+export const API_BASE_URL = "https://www.pitp.pk/qapi.pitp.pk/api";
 
 export const TRANSLATIONS = [
   {
